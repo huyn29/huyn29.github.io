@@ -1,0 +1,155 @@
+[
+{
+	"uri": "//localhost:62333/3-prerequiste/3.1-addalias/",
+	"title": "Create alias",
+	"tags": [],
+	"description": "",
+	"content": "Create alias for root user. When creating an alias for the root user, the iam users will not need to enter the Account ID string of the root account. This is necessary for easy login and account security\nAccess the AWS Management Console interface: Locate and click on IAM Choose IAM Within the IAM dashboard: Click Create in AWS Account alias area Click on Create Follow these steps to create a alias: Enter alias so that it is unique Click on Create alias Complete the process of creating the Alias If you have not installed MFA, you need to add it to enhance account security.\n"
+},
+{
+	"uri": "//localhost:62333/4-createec2server/4.1-createec2/",
+	"title": "Create EC2 Server",
+	"tags": [],
+	"description": "",
+	"content": "Create EC2 Server Access the AWS Management Console:\nNavigate to EC2 Click on Instances In the EC2 interface:\nSelect Instances Choose Launch instances Provide a Name and tags for the instance, enter evn-webserver-beta\nChoose the AMI.\nSelect Quick Start Choose Amazon Linux 2023 AMI Select an Instance type and opt to Create a new key pair\nIn the Create key pair interface:\nSpecify the Key pair name, e.g., key (optional name, you can set any). Choose Key pair type: RSA Select Private key file format: .pem Configure the Network:\nSelect the VPC: default Choose the Subnet: AZ:us-east-01 Enable Auto-assign public IP For Firewall (Security Group), select Create security group Enter name of security group: Webserver-SG Advanced detail\ncurl \u0026#34;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip\u0026#34; -o \u0026#34;awscliv2.zip\u0026#34;\runzip awscliv2.zip\rsudo ./aws/install Paste command string in above to install AWS CLI Complete EC2 Server creation "
+},
+{
+	"uri": "//localhost:62333/5-attachroletoec2/5.1-createrole/",
+	"title": "Create Role access amazon S3",
+	"tags": [],
+	"description": "",
+	"content": "Create a iam role grant access amazon s3 permissions. In the IAM interface:\nSelect Policy Click on Create policy\nCreate a new policy:\nSelect JSON tab\nEnter json string in Edittor window\n{ \u0026#34;Version\u0026#34;: \u0026#34;2012-10-17\u0026#34;, \u0026#34;Statement\u0026#34;: [ { \u0026#34;Sid\u0026#34;: \u0026#34;Statement1\u0026#34;, \u0026#34;Effect\u0026#34;: \u0026#34;Allow\u0026#34;, \u0026#34;Action\u0026#34;: [\u0026#34;s3:*\u0026#34;], \u0026#34;Resource\u0026#34;: [\u0026#34;*\u0026#34;] } ] } Paste json string in above and click on Create policy Enter all information of policy\nEnter name of Policy AcessS3BucketPolicy and click Create Complete the creation of the Policy In the IAM interface:\nSelect Roles. Click on Create role. Select trusted entity: Choose EC2 Add permissions: Enter to searh policy:AcessS3BucketPolicy Click on policy. This is policy our define before For Role name, Enter a name for the role, for example AccessS3BucketRole. Select Create role. Complete the role creation. "
+},
+{
+	"uri": "//localhost:62333/",
+	"title": "Ensure security between applications on AWS",
+	"tags": [],
+	"description": "",
+	"content": "Ensure security between applications on AWS Overview In this lab, you will explore the fundamentals of IAM in Amazon web Service. Gain an understanding of essential concepts and features within IAM, and practice ensure security between applications with IAM Role. Practice ensuring security in the cloud environment based on best practices through the use of IAM services.\nContent Introduction to IAM Aechitecture Preparation Steps Creating an EC2 Server Attach Role to EC2 Server Cleanup Resource Refer Document: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html\n"
+},
+{
+	"uri": "//localhost:62333/1-introduce/1.1-user/",
+	"title": "IAM User",
+	"tags": [],
+	"description": "",
+	"content": "IAM Group IAM Group là một tính năng hỗ trợ việc quản lý người dùng (IAM User). Một IAM Group có thể chứa nhiều IAM User. Các IAM User ở trong một IAM Group đều hưởng chung quyền mà IAM Group đó được gán\nIAM User IAM User IAM User is a user located in an AWS Account. When you sign in to AWS, you will be logged in as an IAM User. If you’re logging into AWS for the first time, you’ll be logging in as a root user. In addition to the root user, you can create multiple other IAM Users to allow others to access the AWS resources in your AWS account.\nBy default, a new IAM user has no permissions to do anything. They are not authorized to perform any AWS operations or to access any AWS resources. An advantage of having individual IAM users is that you can assign permissions individually to each user. You might assign administrative permissions to a few users, who then can administer your AWS resources and can even create and manage other IAM users. In most cases, however, you want to limit a user\u0026rsquo;s permissions to just the tasks (AWS actions or operations) and resources that are needed for the job.\n"
+},
+{
+	"uri": "//localhost:62333/1-introduce/",
+	"title": "Introduction",
+	"tags": [],
+	"description": "",
+	"content": "Introduction to IAM AWS Identity and Access Management (IAM) is a web service that helps you securely control access to AWS resources. With IAM, you can centrally manage permissions that control which AWS resources users can access. You use IAM to control who is authenticated (signed in) and authorized (has permissions) to use resources.\nWhen you create an AWS account, you begin with one sign-in identity that has complete access to all AWS services and resources in the account. This identity is called the AWS account root user and is accessed by signing in with the email address and password that you used to create the account.\nContents IAM User IAM Policy IAM Role IAM Role for application "
+},
+{
+	"uri": "//localhost:62333/2-architecture/",
+	"title": "Architecture",
+	"tags": [],
+	"description": "",
+	"content": "Architecture Note: In below, It explain work flow of architecture\nHow do roles for Amazon EC2 instances work? In the following figure, a developer runs an application on an Amazon EC2 instance that requires access to the S3 bucket named photos. An administrator creates the Get-pics service role and attaches the role to the Amazon EC2 instance. The role includes a permissions policy that grants read-only access to the specified S3 bucket. It also includes a trust policy that allows the Amazon EC2 instance to assume the role and retrieve the temporary credentials. When the application runs on the instance, it can use the role\u0026rsquo;s temporary credentials to access the photos bucket. The administrator doesn\u0026rsquo;t have to grant the developer permission to access the photos bucket, and the developer never has to share or manage credentials.\n"
+},
+{
+	"uri": "//localhost:62333/5-attachroletoec2/5.2-attachrole/",
+	"title": "Attach role to EC2 Server",
+	"tags": [],
+	"description": "",
+	"content": "Attach role to EC2 server(Apllication) In the previous section, we created a role to access the S3 service. In order for the EC2 server to connect to the s3 service, we need to attach the role we created earlier to the ec2 server.\nAccess the EC2 Page Go to the EC2 page. Select Instances. Choose the evn-webserver-beta instance. Click Action Click on Security Finally, click on Modify IAM role Attach role Choose role created before: AccessS3BucketRole Click on Update IAM role Complete attaching role to Ec2 server "
+},
+{
+	"uri": "//localhost:62333/4-createec2server/4.2-connectec2/",
+	"title": "Test Connection",
+	"tags": [],
+	"description": "",
+	"content": "Checking Connection to webserver Access the EC2 Page\nGo to the EC2 page. Select Instances. Choose the EC2 Public instance. Select Details. Locate the Public IPv4 address. Using MobaXterm connect webserver\nAfter downloading MobaXterm, extract and open it. Select Session. In the Session settings interface, choose SSH. In the Session settings interface: Enter the Remote host (Public IPv4 address). Specify the username as ec2-user. Choose the Use private key option and provide the path to the key.pem file created and downloaded during EC2 instance creation. Successful Connection\nTesting AWS CLI version\nExecute the following command to test aws version\naws --version "
+},
+{
+	"uri": "//localhost:62333/4-createec2server/4.3-connecttos3/",
+	"title": "Connect to S3 by Access key and Secret key",
+	"tags": [],
+	"description": "",
+	"content": "Connect to S3 by Access key and Secret key. We will connect to the S3 service using the Access key and Secret key. This is an insecure connection. Because EC2 Server is a Public internet service. We should only do this in the development environment to avoid revealing the Access key and Secret key.\nUsing MobaXterm connect webserver\nAfter downloading MobaXterm, extract and open it. Select Session. In the Session settings interface, choose SSH. In the Session settings interface: Enter the Remote host (Public IPv4 address). Specify the username as ec2-user. Choose the Use private key option and provide the path to the key.pem file created and downloaded during EC2 instance creation. Execute command: aws s3 ls Note: We cannot connect to the S3 service.\nNavigate to Security credentials\nClick on Security credentials Click on Create access key Choose Command Line Interface (CLI) Add description tag Completed create Access key and Secret key Add Access key and Secret key.\nExecute command: aws configure Enter Access key and Secret key Connect to S3 Service\nExecute command: aws s3 ls Connection of EC2 Server to S3 service is successfully\n"
+},
+{
+	"uri": "//localhost:62333/5-attachroletoec2/5.3-testconnecttos3/",
+	"title": "Connect to S3 service",
+	"tags": [],
+	"description": "",
+	"content": "Testing connection of EC2 server to S3 Service Once we have completed attaching the role to EC2, we will test the connection to the S3 service\nOpen Mobaxterm show all bucket\nOpen Mobaxterm and ssh to Ec2 server again Execute command: aws s3 ls Try create new a bucket\n[ec2-user@ip-172-31-5-246 ~]$ aws s3 mb s3://fcj-workshop-bucket\rmake_bucket: fcj-workshop-bucket\r[ec2-user@ip-172-31-5-246 ~]$ aws s3 ls\r2024-03-07 16:34:42 fcj-workshop-bucket\r2023-08-28 15:05:14 huyn29\r[ec2-user@ip-172-31-5-246 ~]$ Connection of EC2 Server to S3 service is successfully\n"
+},
+{
+	"uri": "//localhost:62333/3-prerequiste/3.2-createuser/",
+	"title": "Create admin user",
+	"tags": [],
+	"description": "",
+	"content": "Create a admin user In the IAM interface:\nSelect Users. Click on Create user. Create user detail:\nEnter the name of user: fcj-ws Click on Provide user acess to the Management AWS console Click on Next Add permission\nClick on Attach policies directly Enter name policy: AdministratorAccess Click this policy and click next Then click Create user\nComplete create user.\n"
+},
+{
+	"uri": "//localhost:62333/1-introduce/1.2-policy/",
+	"title": "IAM Policy",
+	"tags": [],
+	"description": "",
+	"content": "IAM Policy An IAM Policy allows you to gain access to resources within your AWS account. IAM Policies can be assigned to IAM Groups, IAM Users, and IAM Roles.\nIdentity-based policies Identity-based policies are JSON permissions policy documents that control what actions an identity (users, groups of users, and roles) can perform, on which resources, and under what conditions. Identity-based policies can be further categorized:\nManaged policies – Standalone identity-based policies that you can attach to multiple users, groups, and roles in your AWS account. There are two types of managed policies:\nAWS managed policies – Managed policies that are created and managed by AWS.\nCustomer managed policies – Managed policies that you create and manage in your AWS account. Customer managed policies provide more precise control over your policies than AWS managed policies.\nInline policies – Policies that you add directly to a single user, group, or role. Inline policies maintain a strict one-to-one relationship between a policy and an identity. They are deleted when you delete the identity.\n"
+},
+{
+	"uri": "//localhost:62333/3-prerequiste/",
+	"title": "Preparation steps",
+	"tags": [],
+	"description": "",
+	"content": "Preparation steps In this exercise, we will be constructing a model based on the following diagram: Content Create Alias Create Policy Create User Login with admin user "
+},
+{
+	"uri": "//localhost:62333/4-createec2server/",
+	"title": "Create EC2 Server",
+	"tags": [],
+	"description": "",
+	"content": "Create EC2 Server In this step, we will create 2 EC2 servers (EC2 instances) and use Access key and Secret key to access S3 service form EC2 server following the architecture shown below:\nContent Create EC2 Server Test Connection Connect to S3 by Access key and Secret key "
+},
+{
+	"uri": "//localhost:62333/1-introduce/1.3-role/",
+	"title": "IAM Role",
+	"tags": [],
+	"description": "",
+	"content": "IAM Role IAM Role is a feature that enhances security on AWS. An IAM Role can be temporarily assigned to IAM Users and AWS resources either internally or externally to your account. Suppose, when an IAM User assumes an IAM Role, that IAM User will temporarily acquire the rights of that IAM Role. You should use the IAM Role when you want to provide short-term access to an IAM User or AWS resource.\nFor an IAM User to accept an IAM Role, the IAM Role itself needs to allow the User to perform a trust policy.\nAn important feature is that the IAM Role has no credentials, so you won’t be able to log into your AWS account directly using the IAM Role.\n"
+},
+{
+	"uri": "//localhost:62333/1-introduce/1.4-roleforapplication/",
+	"title": "IAM Role for application",
+	"tags": [],
+	"description": "",
+	"content": "IAM Role Applications that run on an Amazon EC2 instance must include AWS credentials in the AWS API requests. You could have your developers store AWS credentials directly within the Amazon EC2 instance and allow applications in that instance to use those credentials. But developers would then have to manage the credentials and ensure that they securely pass the credentials to each instance and update each Amazon EC2 instance when it\u0026rsquo;s time to update the credentials. That\u0026rsquo;s a lot of additional work.\nInstead, you can and should use an IAM role to manage temporary credentials for applications that run on an Amazon EC2 instance. When you use a role, you don\u0026rsquo;t have to distribute long-term credentials (such as sign-in credentials or access keys) to an Amazon EC2 instance. Instead, the role supplies temporary permissions that applications can use when they make calls to other AWS resources. When you launch an Amazon EC2 instance, you specify an IAM role to associate with the instance. Applications that run on the instance can then use the role-supplied temporary credentials to sign API requests.\nUsing roles to grant permissions to applications that run on Amazon EC2 instances requires a bit of extra configuration. An application running on an Amazon EC2 instance is abstracted from AWS by the virtualized operating system. Because of this extra separation, you need an additional step to assign an AWS role and its associated permissions to an Amazon EC2 instance and make them available to its applications. This extra step is the creation of an instance profile attached to the instance. The instance profile contains the role and can provide the role\u0026rsquo;s temporary credentials to an application that runs on the instance. Those temporary credentials can then be used in the application\u0026rsquo;s API calls to access resources and to limit access to only those resources that the role specifies.\n"
+},
+{
+	"uri": "//localhost:62333/3-prerequiste/3.3-loginwithuser/",
+	"title": "Login to admin user",
+	"tags": [],
+	"description": "",
+	"content": "Login to admin user. Go back to the IAM service, and on the left sidebar, select Users.\nClick on the name of the IAM User you just created.\nUnder the Summary section, go to the Security credentials tab. Locate the line Summary: Console sign-in link and copy the link provided. This link will be used for logging in to the IAM User. Open an incognito tab in your browser and paste the copied link into the address bar. Press Enter. Then change password in first time to login Login successfull "
+},
+{
+	"uri": "//localhost:62333/5-attachroletoec2/",
+	"title": "Attach Role To EC2 Server",
+	"tags": [],
+	"description": "",
+	"content": "In the previous step, we will connect to the S3 service using the Access Key và Secret Key. This is an insecure connection. Because EC2 Server is a Public internet service. We should only do this in the development environment to avoid revealing the Access Key và Secret Key. Therefore, to secure connections between services in AWS, we will use IAM Role so that services can talk to each other without having to manage authentication information. This is essential for improving application security on EC2 servers. Please follow the steps below\nContent Create role to acces S3 Attach role to EC2 Attach role to EC2 "
+},
+{
+	"uri": "//localhost:62333/6-cleanup/",
+	"title": "Clean up resources",
+	"tags": [],
+	"description": "",
+	"content": "Clean up resources We will proceed to delete the resources in the following order:\nTerminate EC2 Instances Terminate EC2 instance:\nAccess the Amazon EC2 console at EC2. On the left navigation bar, select \u0026ldquo;Instances.\u0026rdquo; Select all EC2 instances related to the lab. Select Instance state. Select Terminate instance. Confirm termination.\nDelete Role Deleted policy Refer Document: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html\n"
+},
+{
+	"uri": "//localhost:62333/categories/",
+	"title": "Categories",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "//localhost:62333/tags/",
+	"title": "Tags",
+	"tags": [],
+	"description": "",
+	"content": ""
+}]

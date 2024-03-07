@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Create Role access amazon S3 on Start with Amazon VPC and AWS VPN Site-to-Site.</title>
+    <link>//localhost:62333/5-attachroletoec2/5.1-createrole/</link>
+    <description>Recent content in Create Role access amazon S3 on Start with Amazon VPC and AWS VPN Site-to-Site.</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <atom:link href="//localhost:62333/5-attachroletoec2/5.1-createrole/index.xml" rel="self" type="application/rss+xml" />
+  </channel>
+</rss>

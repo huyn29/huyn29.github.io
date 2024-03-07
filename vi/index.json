@@ -1,0 +1,155 @@
+[
+{
+	"uri": "//localhost:62333/vi/",
+	"title": "Đảm bảo tính bảo mật giữa các ứng dụng trên AWS",
+	"tags": [],
+	"description": "",
+	"content": "Đảm bảo tính bảo mật giữa các ứng dụng trên AWS Tổng quan Trong bài lab này, bạn sẽ khám phá các nguyên tắc cơ bản của IAM trong Dịch vụ web của Amazon. Hiểu biết về các khái niệm và tính năng thiết yếu trong IAM, đồng thời thực hành đảm bảo tính bảo mật giữa các ứng dụng với IAM Role. Thực hành đảm bảo an ninh trong môi trường cloud dựa trên các best practices thông qua việc sử dụng dịch vụ IAM.\nNội dung Introduction to IAM Aechitecture Preparation Steps Creating an EC2 Server Attach Role to EC2 Server Cleanup Resource Refer Document: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html\n"
+},
+{
+	"uri": "//localhost:62333/vi/1-introduce/",
+	"title": "Giới thiệu",
+	"tags": [],
+	"description": "",
+	"content": "Giới thiệu IAM AWS Identity and Access Management (IAM) là dịch vụ web giúp bạn kiểm soát quyền truy cập vào tài nguyên AWS một cách an toàn. Với IAM, bạn có thể quản lý tập trung các quyền kiểm soát tài nguyên AWS nào người dùng có thể truy cập. Bạn sử dụng IAM để kiểm soát ai được xác thực (đăng nhập) và được ủy quyền (có quyền) để sử dụng tài nguyên.\nKhi tạo tài khoản AWS, bạn bắt đầu bằng một danh tính đăng nhập có toàn quyền truy cập vào tất cả các dịch vụ và tài nguyên AWS trong tài khoản. Danh tính này được gọi là người dùng root của tài khoản AWS và được truy cập bằng cách đăng nhập bằng địa chỉ email và mật khẩu mà bạn đã sử dụng để tạo tài khoản.\nNội dung IAM User IAM Policy IAM Role IAM Role for application "
+},
+{
+	"uri": "//localhost:62333/vi/1-introduce/1.1-user/",
+	"title": "IAM User",
+	"tags": [],
+	"description": "",
+	"content": "IAM Group IAM Group is a feature that supports user management (IAM User). An IAM Group can contain multiple IAM Users. IAM Users in an IAM Group all enjoy the same rights to which that IAM Group is assigned\nIAM User IAM User IAM User là một người dùng nằm trong AWS Account. Khi bạn đăng nhập vào AWS, bạn sẽ phải đăng nhập dưới danh nghĩa của một IAM User. Nếu bạn mới đăng nhập vào AWS lần đầu tiên, bạn sẽ đăng nhập dưới danh nghĩa của root user (tạm dịch là người dùng gốc). Ngoài root user ra, bạn có thể tạo ra nhiều IAM User khác để cho phép người khác truy cập vào tài nguyên AWS trong tài khoản AWS của bạn.\nTheo mặc định, người dùng IAM mới không có quyền làm bất cứ điều gì. Họ không được phép thực hiện bất kỳ hoạt động AWS nào hoặc truy cập bất kỳ tài nguyên AWS nào. Lợi ích của việc có người dùng IAM riêng lẻ là bạn có thể chỉ định quyền riêng lẻ cho từng người dùng. Bạn có thể chỉ định quyền quản trị cho một số người dùng, sau đó họ có thể quản lý tài nguyên AWS của bạn và thậm chí có thể tạo và quản lý những người dùng IAM khác. Tuy nhiên, trong hầu hết các trường hợp, bạn muốn giới hạn quyền của người dùng chỉ đối với các tác vụ (hành động hoặc hoạt động AWS) và các tài nguyên cần thiết cho công việc.\n"
+},
+{
+	"uri": "//localhost:62333/vi/3-prerequiste/3.1-addalias/",
+	"title": "Tạo alias cho root user",
+	"tags": [],
+	"description": "",
+	"content": "Tạo alias cho root user Khi tạo một alias cho root user thì các iam user sẽ không cần nhập chuỗi Account ID của tài khoản root. Điều này là cần thiết cho việc đăng nhập dễ dàng và bảo mật tài khoản\nTruy cập giao diện AWS Management Console\nTìm IAM Chọn IAM Trong giao diện IAM Chọn Create ở khu có title AWS Account alias Chọn CreatePC Tiến hành các bước tạo alias\nNhập alias sao cho nó là duy nhất Nhấn vào \u0026ldquo;Create alias\u0026rdquo; Hoàn thành tạo alias Nếu bạn chưa cài MFA thì cần thêm để tăng cường bảo mật tài khoản.\n"
+},
+{
+	"uri": "//localhost:62333/vi/4-createec2server/4.1-createec2/",
+	"title": "Tạo máy chủ EC2",
+	"tags": [],
+	"description": "",
+	"content": "Tạo máy chủ EC2 Truy cập AWS Management Console:\nĐiều hướng đến EC2 Click chọn Instances Trên giao diện EC2 :\nChọn Instances Tiếp tục chọn Launch instances Provide a Name and tags for the instance, enter evn-webserver-beta\nWhen naming the server, it is required to contain the keyword env or beta because the policy has this condition. This is to better control access to the aws service Lựa chọn AMI:\nChọn Quick Start Tiếp tục chọn Amazon Linux 2023 AMI Lựa chọn một Instance type và click Create a new key pair\nIn the Create key pair interface:\nChỉ định Key pair name, e.g., key. Chọn Key pair type: RSA Chọn Private key file format: .pem Cấu hình Network:\nLựa chọn VPC: default Lựa chọn Subnet: AZ:us-east-01 Enable Auto-assign public IP Firewall (Security Group), chọn Create security group Nhập tên của Security group: Webserver-SG Click Advanced detail\nDán chuỗi lệnh vào ô nhập User data để cài đặt A curl \u0026#34;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip\u0026#34; -o \u0026#34;awscliv2.zip\u0026#34;\runzip awscliv2.zip\rsudo ./aws/install Dán chuỗi lệnh vào ô nhập User data để cài đặt AWS CLI Hoàn thành tạo EC2 Server "
+},
+{
+	"uri": "//localhost:62333/vi/5-attachroletoec2/5.1-createrole/",
+	"title": "Tạo Role truy cập S3",
+	"tags": [],
+	"description": "",
+	"content": "Tạo Iam Role cấp quyền truy cập Amazon s3. In the IAM interface:\nChọn Policy Click Create policy\nTạo mới policy:\nChọn JSON tab.\nNhập chuỗi json vào của sổ Edittor.\n{ \u0026#34;Version\u0026#34;: \u0026#34;2012-10-17\u0026#34;, \u0026#34;Statement\u0026#34;: [ { \u0026#34;Sid\u0026#34;: \u0026#34;Statement1\u0026#34;, \u0026#34;Effect\u0026#34;: \u0026#34;Allow\u0026#34;, \u0026#34;Action\u0026#34;: [\u0026#34;s3:*\u0026#34;], \u0026#34;Resource\u0026#34;: [\u0026#34;*\u0026#34;] } ] } Dán chuỗi string vào nhấn Create policy Nhập các thông tin policy Nhập tên của Policy AcessS3BucketPolicy và click Create Hoàn thành tạo Policy Tại màn hình IAM:\nChọn Roles. Click on Create role. Select trusted entity: Chọn EC2 Thêm permissions: Nhập tên của policy:AcessS3BucketPolicy Chọn policy mà ta vừa tạo trước đó. For Role name, Nhập tên của Role, Ví dụ: AccessS3BucketRole. Chọn Create role. Hoàn thành tạo Role. "
+},
+{
+	"uri": "//localhost:62333/vi/5-attachroletoec2/5.2-attachrole/",
+	"title": "Gắn role với máy chủ EC2",
+	"tags": [],
+	"description": "",
+	"content": "Gắn role với EC2 server(Chứa ứng dụng) Ở phần trước, chúng ta dã tạo được một role cho dịch vụ EC2 có thể kết nối dịch vụ S3 service. Để máy chủ EC2 có thể kết nối với dịch vụ s3 thì chúng ta cần gắn role chúng ta đã tạo trước đó vào máy chủ ec2.\nTruy cập vào EC2 Page Truy cập vào EC2 page. Chọn Instances. Click chọn evn-webserver-beta instance. Click Action Click vào Security Cuối cùng, click vào Modify IAM role Attach role Chọn role đã tạo trước đó: AccessS3BucketRole Click vào Update IAM role Hoàn thành gắn role với Ec2 server "
+},
+{
+	"uri": "//localhost:62333/vi/4-createec2server/4.2-connectec2/",
+	"title": "Kiểm tra kết nối",
+	"tags": [],
+	"description": "",
+	"content": "Kiểm tra kết nối tới webserver Truy cập tới EC2 Page\nTruy cập tới EC2 page. Click chọn Instances. Click chọn evn-webserver-beta instance. Chọn Details. Xác định Public IPv4 address và coppy. Using MobaXterm connect webserver\nSau khi tải phần mềm MobaXterm, giải nén và mở. Chọn Session. Tại giao diện Session settings, chọn SSH. Tại giao diện Session settings: Nhập Remote host (Public IPv4 address). Chỉ định username là ec2-user. Chọn Use private key option and cung cấp path đến file key.pem đã tạo và đã tải khi tạo EC2. Kết nối thành công\nKiểm tra AWS CLI version\nExecute the following command to test aws version\naws --version "
+},
+{
+	"uri": "//localhost:62333/vi/2-architecture/",
+	"title": "Kiến trúc",
+	"tags": [],
+	"description": "",
+	"content": "Architecture Note: Giải thích quy trình làm việc của kiến trúc ở phía dưới\nVai trò của phiên bản Amazon EC2 hoạt động như thế nào? Trong hình dưới đây, nhà phát triển chạy một ứng dụng trên phiên bản Amazon EC2 yêu cầu quyền truy cập vào bộ chứa S3 có tên photos. Quản trị viên tạo vai trò dịch vụ Get-pics và gắn vai trò này vào phiên bản Amazon EC2. Vai trò này bao gồm chính sách quyền cấp quyền truy cập chỉ đọc vào nhóm S3 được chỉ định. Nó cũng bao gồm chính sách tin cậy cho phép phiên bản Amazon EC2 đảm nhận vai trò và truy xuất thông tin xác thực tạm thời. Khi ứng dụng chạy trên phiên bản, ứng dụng có thể sử dụng thông tin xác thực tạm thời của vai trò để truy cập vào nhóm ảnh. Quản trị viên không phải cấp cho nhà phát triển quyền truy cập vào nhóm ảnh và nhà phát triển không bao giờ phải chia sẻ hoặc quản lý thông tin xác thực.\n"
+},
+{
+	"uri": "//localhost:62333/vi/3-prerequiste/",
+	"title": "Các bước chuẩn bị",
+	"tags": [],
+	"description": "",
+	"content": "Các bước chuẩn bị Trong bài thực hành này, chúng ta sẽ xây dựng một mô hình theo sơ đồ bên dưới:\nNội dung Create Alias Create Policy Create User Login with admin user "
+},
+{
+	"uri": "//localhost:62333/vi/1-introduce/1.2-policy/",
+	"title": "IAM Policy",
+	"tags": [],
+	"description": "",
+	"content": "IAM Policy IAM Policy cho phép bạn truy cập vào các tài nguyên trong tài khoản AWS của bạn. IAM Policy có thể được gán cho IAM Group, IAM User và IAM Role.\nVí dụ, trong hình ảnh dưới đây, chúng ta sẽ gán IAM Policy cho IAM Group hoặc IAM User. Các IAM User được gán với IAM Policy sẽ có khả năng truy cập và thực hiện các hành động được ủy quyền bởi IAM Policy đối với các tài nguyên AWS như máy chủ ảo EC2.\nIdentity-based policies Identity-based policies là tài liệu chính sách quyền kiểm soát những hành động mà danh tính (người dùng, nhóm người dùng và vai trò) có thể thực hiện, trên tài nguyên nào và trong điều kiện nào. Các Identity-based policies có thể được phân loại :\nManaged policies – Identity-based policies độc lập mà bạn có thể đính kèm cho nhiều người dùng, nhóm và vai trò trong tài khoản AWS của mình. Có hai loại chính sách được quản lý:\nAWS managed policies – Chính sách được quản lý do AWS tạo và quản lý. Customer managed policies – Chính sách được quản lý mà bạn tạo và quản lý trong tài khoản AWS của mình. Chính sách do khách hàng quản lý cung cấp khả năng kiểm soát chính sách của bạn chính xác hơn so với chính sách do AWS quản lý. Inline policies - Chính sách mà bạn thêm trực tiếp vào một người dùng, nhóm hoặc vai trò. Chính sách nội tuyến duy trì mối quan hệ một-một chặt chẽ giữa chính sách và danh tính. Chúng sẽ bị xóa khi bạn xóa danh tính.\n"
+},
+{
+	"uri": "//localhost:62333/vi/4-createec2server/4.3-connecttos3/",
+	"title": "Kết nối S3 bằng Access key và Secret key",
+	"tags": [],
+	"description": "",
+	"content": "Kết nối S3 bằng Access key và Secret key. Chúng ta sẽ kết nối với dịch vụ S3 sử dụng Access key và Secret key. Đây là kết nối không an toàn. Do EC2 Server là một dịch vụ Public internet. Chúng ta chỉ nên thực hiện điều này tại môi trường phát triển để tránh bị lộ Access key và Secret key.\nUsing MobaXterm connect webserver Sau khi tải phần mềm MobaXterm, giải nén và mở. Chọn Session. Tại giao diện Session settings, chọn SSH. Tại giao diện Session settings: Nhập Remote host (Public IPv4 address). Chỉ định username là ec2-user. Chọn Use private key option and cung cấp path đến file key.pem đã tạo và đã tải khi tạo EC2. Thực thi câu lệnh: aws s3 ls Enter all information of policy\nEnter name of Policy AcessS3BucketPolicy and click Create Note: Chúng ta chưa thể kết nối với dịch vụ S3.\nĐiều hường tới Security credentials\nClick Security credentials Click Create access key Chọn Command Line Interface (CLI) Thêm description tag Hoàn thành tạo Access key and Secret key Thêm Access key and Secret key.\nThực thi lệnh: aws configure Nhập Access key và Secret key Connect to S3 Service\nhực thi lệnh: aws s3 ls Kết nối Máy chủ EC2 với dịch vụ S3 thành công\n"
+},
+{
+	"uri": "//localhost:62333/vi/5-attachroletoec2/5.3-testconnecttos3/",
+	"title": "Kết nối với dịch vụ S3",
+	"tags": [],
+	"description": "",
+	"content": "Kiểm tra kết nối của EC2 server tới dịch vụ S3 Khi đã hoàn thành gắn role với EC2 chúng ta sẽ kiểm tra kết nối tới dịch vụ S3\nMở Mobaxterm show all bucket\nMở Mobaxterm và thực hiện ssh to Ec2 server Thực thi câu lệnh: aws s3 ls Thử tạo mới một S3 bucket\n```\r[ec2-user@ip-172-31-5-246 ~]$ aws s3 mb s3://fcj-workshop-bucket\rmake_bucket: fcj-workshop-bucket\r[ec2-user@ip-172-31-5-246 ~]$ aws s3 ls\r2024-03-07 16:34:42 fcj-workshop-bucket\r2023-08-28 15:05:14 huyn29\r[ec2-user@ip-172-31-5-246 ~]$\r```\rKết nối Máy chủ EC2 với dịch vụ S3 thành công\n"
+},
+{
+	"uri": "//localhost:62333/vi/3-prerequiste/3.2-createuser/",
+	"title": "Tạo admin user",
+	"tags": [],
+	"description": "",
+	"content": "Tạo một admin user Trong giao diện IAM\nChọn Users Click chọn Create user. Tạo thông tin chi tiết cho user:\nNhập tên của user: fcj-ws Click chọn Provide user acess to the Management AWS console Click chọn Next Thêm quyền cho user\nClick chọn Attach policies directly Nhập tên policy: AdministratorAccess Click chọn policy and click Next Tiếp theo chọn Create user\nHoàn thành tạo mới user.\n"
+},
+{
+	"uri": "//localhost:62333/vi/3-prerequiste/3.3-loginwithuser/",
+	"title": "Đăng nhập tới admin user",
+	"tags": [],
+	"description": "",
+	"content": "Đăng nhập tới admin user. Quay trở lại dịch vụ IAM, và ở phía trái sidebar, chon Users.\nClick vào tên của IAM User bạn vừa tạo.\nTrong phần Summary, hãy chuyển đến tab Security credentials. Xác định vị trí dòng Summary: Console sign-in link và sao chép liên kết được cung cấp. Liên kết này sẽ được sử dụng để đăng nhập vào IAM User. Mở tab ẩn danh trong trình duyệt của bạn và dán liên kết đã sao chép vào thanh địa chỉ. Bấm phím Enter. Sau đó thay đổi mật khẩu trong lần đăng nhập đầu tiên Đăng nhập thành công. "
+},
+{
+	"uri": "//localhost:62333/vi/1-introduce/1.3-role/",
+	"title": "IAM Role",
+	"tags": [],
+	"description": "",
+	"content": "IAM Role IAM Role là tính năng giúp nâng cao tính bảo mật trên AWS. Một IAM Role có thể được gán tạm thời cho các IAM User và các tài nguyên AWS trong nội bộ (internal) hoặc bên ngoài (external) tài khoản của bạn. Giả sử, khi một IAM User tiếp nhận (assume) một IAM Role, IAM User đó sẽ tạm thời có được những quyền hạn của IAM Role đó. Bạn nên sử dụng IAM Role khi bạn muốn cung cấp quyền truy cập ngắn hạn cho một IAM User hoặc tài nguyên AWS.\nĐể một IAM User có thể tiếp nhận (assume) IAM Role, thì bản thân IAM Role cần cho phép User thực hiện thao tác tiếp nhận (trust policy).\nMột đặc tính quan trọng của IAM Role là không có thông tin chứng thực (credentials) nên bạn sẽ không thể đăng nhập trực tiếp vào tài khoản AWS bằng IAM Role.\n"
+},
+{
+	"uri": "//localhost:62333/vi/1-introduce/1.4-roleforapplication/",
+	"title": "IAM Role for application",
+	"tags": [],
+	"description": "",
+	"content": "IAM Role for application Các ứng dụng chạy trên Amazon EC2 phải bao gồm thông tin xác thực AWS trong API AWS requests. Bạn có thể yêu cầu nhà phát triển của mình lưu trữ thông tin xác thực AWS trực tiếp trong phiên bản Amazon EC2 và cho phép các ứng dụng trong phiên bản đó sử dụng các thông tin xác thực đó. Tuy nhiên, sau đó, các nhà phát triển sẽ phải quản lý thông tin xác thực và đảm bảo rằng họ chuyển thông tin xác thực đến từng phiên bản một cách an toàn và cập nhật từng EC2 khi đến lúc cập nhật thông tin xác thực. Đó là rất nhiều công việc bổ sung.\nThay vào đó, bạn có thể và nên sử dụng vai trò IAM để quản lý thông tin xác thực tạm thời cho các ứng dụng chạy trên phiên bản Amazon EC2. Khi sử dụng một vai trò, bạn không phải phân phối thông tin xác thực dài hạn (chẳng hạn như thông tin xác thực đăng nhập hoặc khóa truy cập) cho phiên bản Amazon EC2. Thay vào đó, vai trò này cung cấp các quyền tạm thời mà ứng dụng có thể sử dụng khi thực hiện lệnh gọi đến các tài nguyên AWS khác. Khi khởi chạy một Amazon EC2, bạn chỉ định vai trò IAM để liên kết với phiên bản đó. Sau đó, các ứng dụng chạy trên phiên bản này có thể sử dụng thông tin xác thực tạm thời do vai trò cung cấp để ký các yêu cầu API.\nViệc sử dụng vai trò để cấp quyền cho các ứng dụng chạy trên phiên bản Amazon EC2 yêu cầu cấu hình bổ sung một chút. Một ứng dụng chạy trên phiên bản Amazon EC2 được hệ điều hành ảo hóa trừu tượng hóa khỏi AWS. Do có sự tách biệt bổ sung này nên bạn cần thực hiện thêm một bước để gán vai trò AWS và các quyền liên quan cho phiên bản Amazon EC2 và cung cấp chúng cho các ứng dụng của phiên bản đó. Bước bổ sung này là tạo một hồ sơ phiên bản gắn liền với phiên bản. Cấu hình phiên bản chứa vai trò và có thể cung cấp thông tin xác thực tạm thời của vai trò cho ứng dụng chạy trên phiên bản. Sau đó, những thông tin xác thực tạm thời đó có thể được sử dụng trong lệnh gọi API của ứng dụng để truy cập tài nguyên và chỉ giới hạn quyền truy cập vào những tài nguyên mà vai trò chỉ định.\n"
+},
+{
+	"uri": "//localhost:62333/vi/4-createec2server/",
+	"title": "Tạo máy chủ EC2 ",
+	"tags": [],
+	"description": "",
+	"content": "Tạo máy chủ EC2 Ở bước này chúng ta sẽ tạo 2 máy chủ EC2 ( EC2 instance ) và sử dụng Access key và Secret key để kết nối dịch vụ S3 tới máy chủ EC2 như kiến trúc dưới đây.\nNội dung Tạo máy chủ EC2 Kiểm tra kết nối Kết nối S3 bằng Access key và Secret key "
+},
+{
+	"uri": "//localhost:62333/vi/5-attachroletoec2/",
+	"title": "Gắn Role với EC2 Server",
+	"tags": [],
+	"description": "",
+	"content": "Ở bước trước, Chúng ta sẽ kết nối với dịch vụ S3 sử dụng Access Key và Secret Key. Đây là kết nối không an toàn. Do EC2 Server là một dịch vụ Public internet. Chúng ta chỉ nên thực hiện điều này tại môi trường phát triển để tránh bị lộ Access Key và Secret Key. Vì vậy để bảo mật khi kết nối giữa các dịch vụ trong AWS chúng ta sẽ sử dụng IAM Role để các dịch vụ có thể nói chuyện với nhau mà không phải quản lí các thông tin xác thực. Điều này rất cần thiết cho việc nâng cao bảo mật bảo mật cho ứng dụng trên các máy chủ EC2. Hãy thực hiện như các bước như dưới đây.\nNội dung Create role to acces S3 Attach role to EC2 Attach role to EC2 "
+},
+{
+	"uri": "//localhost:62333/vi/6-cleanup/",
+	"title": "Dọn dẹp tài nguyên",
+	"tags": [],
+	"description": "",
+	"content": "Dọn dẹp tài nguyên Chúng ta sẽ tiến hành xóa các tài nguyên theo thứ tự sau\nTerminate các EC2 Instance. Terminate EC2 instance.\nTruy cập Amazon EC2 console tại địa chỉ EC2. Trên thanh điều hướng bên trái, chọn Intances Chọn tất cả EC2 Instance liên quan tới bài lab. Chọn Instance state Chọn Terminate instance Xác nhận terminate. Delete Role Deleted policy Refer Document: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html\n"
+},
+{
+	"uri": "//localhost:62333/vi/categories/",
+	"title": "Categories",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "//localhost:62333/vi/tags/",
+	"title": "Tags",
+	"tags": [],
+	"description": "",
+	"content": ""
+}]
